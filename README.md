@@ -1,3 +1,3 @@
-#Automations
+# Automations
 
-My collection of N8N Automation projects
+My collection of N8N Automation Projects.
