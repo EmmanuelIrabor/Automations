@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
 
     ports:
-      - "${N8N_PORT:-4000}:5678"
+      - "4000:5678"
 
     env_file:
       - .env
