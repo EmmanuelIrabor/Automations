@@ -1,0 +1,232 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1d8eb2d1-c861-48c0-a810-69b50e376da4",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://opendiscussion.space/storage/app/public/post_images/wpJFtATKPsywH2SmUVRiEDxGPdRJUtG0Uz1nzhke.png",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "4eafdad1-c14a-43f9-b3c2-40d82816ecc0",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 1,
+        "simple": false,
+        "filters": {},
+        "options": {
+          "dataPropertyAttachmentsPrefixName": "attachment_",
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        288,
+        -176
+      ],
+      "id": "bf53af6f-00c5-4755-bbd9-d69511c1cbd2",
+      "name": "Get many messages",
+      "webhookId": "274ba652-4dbb-40c4-b309-3bcef0a4c41b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "1QorwRkaKCClPvCd",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "$binary",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        512,
+        -160
+      ],
+      "id": "562b90a8-6b45-4057-8b9d-12bc9105f45b",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "operation": "compress",
+        "binaryPropertyName": "attachment_0,attachment_1,attachment_2",
+        "fileName": "gmail_attachments.zip"
+      },
+      "type": "n8n-nodes-base.compression",
+      "typeVersion": 1.1,
+      "position": [
+        528,
+        -16
+      ],
+      "id": "c8c51330-59b8-49c1-bd86-01ca5c08b7d7",
+      "name": "Compression"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.compression",
+      "typeVersion": 1.1,
+      "position": [
+        736,
+        -16
+      ],
+      "id": "6d0a2ef3-8d3e-4ab2-8c89-27b9527a4732",
+      "name": "Compression1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "$binary",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        944,
+        0
+      ],
+      "id": "a1511389-af85-4f3a-8d78-b6d6a8433cb3",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "file_0",
+        "name": "test_n8n_file_upload",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1168,
+        0
+      ],
+      "id": "90e4a948-7f88-414a-b609-c4ead95e392d",
+      "name": "Upload file",
+      "executeOnce": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "oX4yVPoVDJGSfpBA",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get many messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many messages": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Compression",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compression": {
+      "main": [
+        [
+          {
+            "node": "Compression1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compression1": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "1e2d6643-8bec-420e-bbf5-74bc0bf242fb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "14e695548b76cd39d28dd6aaf1223fbe400feacb6c3c304b91ca3d306f9b7821"
+  },
+  "nodeGroups": [],
+  "id": "4qa81fpOTQcYNBeq",
+  "tags": []
+}
